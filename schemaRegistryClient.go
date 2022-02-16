@@ -717,14 +717,26 @@ func (schema *Schema) Codec() *goavro.Codec {
 // JsonSchema ensures access to JsonSchema
 // Will try to initialize a new one if it hasn't been initialized before
 // Will return nil if it can't initialize a json schema from the schema
-func (schema *Schema) JsonSchema() *jsonschema.Schema {
+func (schema *Schema) JsonSchema() (*jsonschema.Schema, error) {
 	if schema.jsonSchema == nil {
 		jsonSchema, err := jsonschema.CompileString("schema.json", schema.Schema())
-		if err == nil {
-			schema.jsonSchema = jsonSchema
+		if err != nil {
+			return nil, err
 		}
+		schema.jsonSchema = jsonSchema
 	}
-	return schema.jsonSchema
+	return schema.jsonSchema, nil
+}
+
+func (schema *Schema) JsonSchemaDraft7() (*jsonschema.Schema, error) {
+	if schema.jsonSchema == nil {
+		jsonSchema, err := jsonschema.CompileString("http://json-schema.org/draft-07/schema", schema.Schema())
+		if err != nil {
+			return nil, err
+		}
+		schema.jsonSchema = jsonSchema
+	}
+	return schema.jsonSchema, nil
 }
 
 func cacheKey(subject string, version string) string {
