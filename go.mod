@@ -1,6 +1,6 @@
-module github.com/riferrei/srclient
+module github.com/everactive/srclient
 
-go 1.12
+go 1.16
 
 require (
 	github.com/linkedin/goavro/v2 v2.9.7
